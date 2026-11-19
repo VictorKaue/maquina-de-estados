@@ -20,6 +20,5 @@ make cobertura    # cobertura de src/maquina.c (gcov)
 
 ## Integrantes
 
-- [Nome 1]
-- [Nome 2]
-- [Nome 3]
+- Victor Kauê
+- Gabriel Cardoso
