@@ -26,6 +26,7 @@ static void TE3_dispensando(void)
     EVENTO(m, EVT_INSERIR_MOEDA, 2);
     EVENTO(m, EVT_SELECIONAR_PRODUTO, 0);
     VERIFICA(m.estado == ESTADO_DISPENSANDO);
+    VERIFICA(m.credito >= PRECO_PRODUTO);   /* invariante de E3 */
 }
 
 static void TE4_fora_de_servico(void)

@@ -116,13 +116,17 @@ static void TT11_eventos_invalidos(void)
     VERIFICA(maquina_processar(&m, EVT_ENTREGA_CONCLUIDA, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_REPARAR, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, 5) == 0); /* moeda não aceita */
-    VERIFICA(m.estado == ESTADO_OCIOSA && m.credito == 0);
+    VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, 3) == 0);
+    VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, 0) == 0);
+    VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, -1) == 0);
+    VERIFICA(m.estado == ESTADO_OCIOSA && m.credito == 0 && m.devolvido == 0);
 
     EVENTO(m, EVT_INSERIR_MOEDA, 1);                           /* COM_CREDITO */
     VERIFICA(maquina_processar(&m, EVT_ENTREGA_CONCLUIDA, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_REPARAR, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, 5) == 0);
-    VERIFICA(m.estado == ESTADO_COM_CREDITO && m.credito == 1);
+    VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, 3) == 0);
+    VERIFICA(m.estado == ESTADO_COM_CREDITO && m.credito == 1 && m.devolvido == 0);
 
     EVENTO(m, EVT_INSERIR_MOEDA, 1);                           /* DISPENSANDO */
     EVENTO(m, EVT_SELECIONAR_PRODUTO, 0);
@@ -130,14 +134,15 @@ static void TT11_eventos_invalidos(void)
     VERIFICA(maquina_processar(&m, EVT_CANCELAR, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_SELECIONAR_PRODUTO, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_REPARAR, 0) == 0);
-    VERIFICA(m.estado == ESTADO_DISPENSANDO && m.credito == 2);
+    VERIFICA(m.estado == ESTADO_DISPENSANDO && m.credito == 2 && m.devolvido == 0);
 
     EVENTO(m, EVT_FALHA, 0);                                   /* FORA_DE_SERVICO */
     VERIFICA(maquina_processar(&m, EVT_SELECIONAR_PRODUTO, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_CANCELAR, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_ENTREGA_CONCLUIDA, 0) == 0);
     VERIFICA(maquina_processar(&m, EVT_FALHA, 0) == 0);
-    VERIFICA(m.estado == ESTADO_FORA_DE_SERVICO);
+    VERIFICA(maquina_processar(&m, EVT_INSERIR_MOEDA, 1) == 0);
+    VERIFICA(m.estado == ESTADO_FORA_DE_SERVICO && m.credito == 0 && m.devolvido == 2);
 }
 
 /* Defesa: um valor de estado fora do enum é rejeitado sem alterar a máquina. */

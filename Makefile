@@ -3,7 +3,7 @@ CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -Isrc -Itests
 BUILD = build
 TESTES = $(BUILD)/test_estados $(BUILD)/test_transicoes $(BUILD)/test_caminhos
 
-.PHONY: test cobertura clean
+.PHONY: test cobertura mutacao clean
 
 test: $(TESTES)
 	@for t in $(TESTES); do ./$$t || exit 1; done
@@ -19,8 +19,12 @@ cobertura: clean
 		$(CC) $(CFLAGS) --coverage tests/test_$$t.c $(BUILD)/cov/maquina.o -o $(BUILD)/cov/test_$$t || exit 1; \
 		./$(BUILD)/cov/test_$$t > /dev/null || exit 1; \
 	done
-	gcov -b $(BUILD)/cov/maquina.o
+	gcov -b -f $(BUILD)/cov/maquina.o
 	@mv *.gcov $(BUILD)/cov/
+
+# Teste de mutação (requer python3)
+mutacao:
+	python3 tests/mutacao.py
 
 $(BUILD):
 	mkdir -p $(BUILD)
